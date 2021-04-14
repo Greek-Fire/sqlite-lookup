@@ -4,19 +4,14 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = """
-        lookup: file
-        author: Daniel Hokka Zakrisson <daniel@hozac.com>
-        version_added: "0.9"  # for collections, use the collection version, not the Ansible version
+        lookup: sqlite
+        author: Louis Tiches <ltiches@redhat.com>
+        version_added: "0.1"  # for collections, use the collection version, not the Ansible version
         short_description: read file contents
         description:
-            - This lookup returns the contents from a file on the Ansible controller's file system.
-        options:
-          _terms:
-            description: path(s) of files to read
-            required: True
-        notes:
-          - if read in variable context, the file can be interpreted as YAML if the content is valid to the parser.
-          - this lookup does not understand globing --- use the fileglob lookup instead.
+        - This lookup returns the contents from a query to a sqlite database
+        ex:
+        - lookup('sqlite', '/chinook.db', 'SELECT * FROM employees')
 """
 from ansible.errors import AnsibleError, AnsibleParserError
 from ansible.plugins.lookup import LookupBase
