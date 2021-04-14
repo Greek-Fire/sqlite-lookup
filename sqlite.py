@@ -13,10 +13,10 @@ DOCUMENTATION = """
         options:
           path:
             description: path of sqlite database
-            default: '/chinook.db' 
+            default: 'change me' 
           select:
             description: select statement to use.
-            default: 'SELECT * FROM employees' 
+            default: 'SELECT * FROM table' 
 """
 from ansible.errors import AnsibleError, AnsibleParserError
 from ansible.plugins.lookup import LookupBase
