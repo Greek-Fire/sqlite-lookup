@@ -30,7 +30,7 @@ except ImportError:
     pass
 
 class LookupModule(LookupBase):
-    def run(self, terms, variables, **kwargs):
+    def run(self, terms, **kwargs):
        # get options
         self.set_options(direct=kwargs)
 
@@ -43,7 +43,7 @@ class LookupModule(LookupBase):
         values = curse.execute(select)
 
         # setup keys from column headers
-        keys = [description[0] for description in values.description]
+        keys = [title[0] for title in values.title]
 
         # create a list of json objects from the results of the select statement
         rel = []
