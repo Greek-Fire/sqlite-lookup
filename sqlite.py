@@ -9,9 +9,14 @@ DOCUMENTATION = """
         version_added: "0.1"  # for collections, use the collection version, not the Ansible version
         short_description: read file contents
         description:
-        - This lookup returns the contents from a query to a sqlite database
-        ex:
-        - lookup('sqlite', '/chinook.db', 'SELECT * FROM employees')
+          - This lookup returns the contents from a query to a sqlite database
+        options:
+          path:
+            description: path of sqlite database
+            default: '/chinook.db' 
+          select:
+            description: select statement to use.
+            default: 'SELECT * FROM employees' 
 """
 from ansible.errors import AnsibleError, AnsibleParserError
 from ansible.plugins.lookup import LookupBase
@@ -25,13 +30,24 @@ except ImportError:
     pass
 
 class LookupModule(LookupBase):
-    def run(self, ents, **kwargs):
-        data = []
-        db,sel = (ents[0], ents[1])
-        curse = sqlite3.connect(db).cursor()
-        values = curse.execute(sel)
+    def run(self, terms, variables, **kwargs):
+       # get options
+        self.set_options(direct=kwargs)
+
+        # setup connection
+        path = self.get_option('path')
+        curse = sqlite3.connect(path).cursor()
+
+        # setup select statement
+        select = self.get_option('select')
+        values = curse.execute(select)
+
+        # setup keys from column headers
         keys = [description[0] for description in values.description]
-        for x in values:
-          entry = dict(zip(keys,x))
-          data.append(entry)
-        return data
+
+        # create a list of json objects from the results of the select statement
+        rel = []
+        for v in values:
+          json_object = dict(zip(keys,v))
+          rel.append(json_object)
+        return rel
