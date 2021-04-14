@@ -14,7 +14,7 @@ Allows users to query sqlite database.
           select:
             description: select statement to use.
             default: 'SELECT * FROM table' 
-            ```
+```
 
 
 ### EXAMPLES
