@@ -1,0 +1,4 @@
+namespace: theredgreek
+name: sqlite
+version: 1.0
+readme: README.md
