@@ -1,5 +1,6 @@
 # sqlite-lookup
-Allows users to query sqlite database.\r
+Allows users to query sqlite database.
+```
         lookup: sqlite
         author: Louis Tiches <ltiches@redhat.com>
         version_added: "0.1"  # for collections, use the collection version, not the Ansible version
@@ -13,9 +14,10 @@ Allows users to query sqlite database.\r
           select:
             description: select statement to use.
             default: 'SELECT * FROM table' 
+            ```
 
 
-# EXAMPLES
+### EXAMPLES
 ```
 - name: "check local database"
   ansible.builtin.debug:
