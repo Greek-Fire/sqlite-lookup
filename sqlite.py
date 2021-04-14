@@ -43,7 +43,7 @@ class LookupModule(LookupBase):
         values = curse.execute(select)
 
         # setup keys from column headers
-        keys = [title[0] for title in values.title]
+        keys = [description[0] for description in description.title]
 
         # create a list of json objects from the results of the select statement
         rel = []
