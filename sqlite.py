@@ -18,6 +18,27 @@ DOCUMENTATION = """
             description: select statement to use.
             default: 'SELECT * FROM table' 
 """
+
+EXAMPLES = '''
+- name: "check local database"
+  ansible.builtin.debug:
+    msg: "{{ lookup('sqlite', 'path=foo/bar', 'select=select * from tablesA') }}"
+- name: "use vars as values"
+  ansible.builtin.debug: 
+    msg: "{{ lookup('sqlite',path=path, select=select)}}"
+  vars:
+    path: 'foo/var'
+    select: 'select * FROM tableA'
+'''
+
+RETURN = '''
+    _raw:
+        description:
+            - list of key value pair.
+            - column headers are the keys.
+        type: list
+        elements: string
+'''
 from ansible.errors import AnsibleError, AnsibleParserError
 from ansible.plugins.lookup import LookupBase
 from ansible.utils.display import Display
