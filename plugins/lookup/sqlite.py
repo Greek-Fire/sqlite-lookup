@@ -13,10 +13,12 @@ DOCUMENTATION = """
         options:
           path:
             description: path of sqlite database
-            default: 'change me' 
+            default: 'change me'
+            required: True
           select:
             description: select statement to use.
-            default: 'SELECT * FROM table' 
+            default: 'SELECT * FROM table'
+            required: True
 """
 
 EXAMPLES = '''
@@ -51,27 +53,35 @@ try:
 except ImportError:
     pass
 
-# function to check if file exist
-def file_check(path):
-    assert(os.path.isfile(path)), "{} is not in the current path".format(path)
+        
 
-# function to check if file is sqlite db file
-def sqlite_check(path):
-    sqlite_header = b'SQLite format 3\x00'
+# function to check if file is sqlite db file and that string is select statement
+def sqlite_check(path, select):
+    file_check = os.path.isfile(path)
     test_file = open(path, "rb")
     file_header = test_file.read(16)
-    assert (file_header == sqlite_header), "{} is not a sqlite db file".format(path)
-
+    qlist = select.split()
+        
+    if qlist.upper() != 'SELECT':
+        raise Exception("Sorry, SELECT statements only")
+        
+    if file_check:
+        raise Exception("{} is not in the current path".format(path))
+        
+    if file_header == b'SQLite format 3\x00':
+        raise Exception("{} is not a sqlite db file".format(path))
 
 class LookupModule(LookupBase):
     def run(self,terms,**kwargs):
         # get options
         self.set_options(direct=kwargs)
-
-        # check for proper sqlite db file
+        
+        # set variables
         path = self.get_option('path')
-        file_check(path)
-        sqlite_check(path)
+        select = self.get_optiom('select')
+        
+        # check for user error
+        sqlite_check(path, select)
 
         # setup connection
         curse = sqlite3.connect(path).cursor()
