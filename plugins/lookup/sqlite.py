@@ -54,32 +54,33 @@ except ImportError:
     pass
 
         
-
 # function to check if file is sqlite db file and that string is select statement
 def sqlite_check(path, select):
     file_check = os.path.isfile(path)
     test_file = open(path, "rb")
     file_header = test_file.read(16)
     qlist = select.split()
-        
-    if qlist.upper() != 'SELECT':
+    select_test = qlist[0].upper()
+    print(file_check)
+
+    if select_test != 'SELECT':
         raise Exception("Sorry, SELECT statements only")
-        
-    if file_check:
+
+    if file_check != True:
         raise Exception("{} is not in the current path".format(path))
-        
-    if file_header == b'SQLite format 3\x00':
+
+    if file_header != b'SQLite format 3\x00':
         raise Exception("{} is not a sqlite db file".format(path))
 
 class LookupModule(LookupBase):
     def run(self,terms,**kwargs):
         # get options
         self.set_options(direct=kwargs)
-        
+
         # set variables
         path = self.get_option('path')
-        select = self.get_optiom('select')
-        
+        select = self.get_option('select')
+
         # check for user error
         sqlite_check(path, select)
 
@@ -99,3 +100,5 @@ class LookupModule(LookupBase):
           json_object = dict(zip(keys,v))
           rel.append(json_object)
         return rel
+
+
