@@ -22,10 +22,10 @@ DOCUMENTATION = """
 EXAMPLES = '''
 - name: "check local database"
   ansible.builtin.debug:
-    msg: "{{ lookup('sqlite', 'path=foo/bar', 'select=select * from tablesA') }}"
+    msg: "{{ lookup('theredgreek.sqlite.sqlite', 'path=foo/bar', 'select=select * from tablesA') }}"
 - name: "use vars as values"
   ansible.builtin.debug: 
-    msg: "{{ lookup('sqlite',path=path, select=select)}}"
+    msg: "{{ lookup('theredgreek.sqlite.sqlite',path=path, select=select)}}"
   vars:
     path: 'foo/var'
     select: 'select * FROM tableA'
