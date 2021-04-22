@@ -54,66 +54,57 @@ except AnsibleParserError():
     raise AnsibleError("Please install sqlite3")
         
 class LookupModule(LookupBase):
-    def run(self,terms, **kwargs, variables=None):
-        ret = []
+from ansible.errors import AnsibleError, AnsibleParserError
+from ansible.plugins.lookup import LookupBase
+from ansible.utils.display import Display
 
-        self.set_options(var_options=variables, direct=kwargs)
+display = Display()
 
-        # populate options
-        paramvals = self.get_options()
+import os
+try:
+    import sqlite3
+except ImportError:
+    pass
 
-        for term in terms:
-            print(term)
-            kv = parse_kv(term)
-            print(kv)
+class LookupModule(LookupBase):
+  def sqlite_check(self, path, select):
+      qlist = select.split()
+      select_test = qlist[0].upper()
+      file_check = False #os.path.isfile(path)
+      display.vvvv(u"File lookup using %s as file" % file_check)
+      try:
+        if file_check:
+          file_header = open(path,"rb").read(16)
+        else:
+          raise AnsibleParserError()
 
-            if '_raw_params' not in kv:
-                raise AnsibleError('Search key is required but was not found')
+      except AnsibleParserError:
+        raise AnsibleError("could not locate file in lookup: %s" % path)
 
-            key = kv['_raw_params']
+      if select_test != 'SELECT':
+          raise AnsibleParserError("Sorry, SELECT statements only")
 
-            # parameters override per term using k/v
-            try:
-                for name, value in kv.items():
-                    if name == '_raw_params':
-                        continue
-                    if name not in paramvals:
-                        raise AnsibleAssertionError('%s is not a valid option' % name)
+      if file_header != b'SQLite format 3\x00':
+          raise AnsibleParserErro("{} is not a sqlite db file".format(path))
 
-                    self._deprecate_inline_kv()
-                    paramvals[name] = value
 
-            except (ValueError, AssertionError) as e:
-                raise AnsibleError(e)
-                
-        self.set_options(direct=kwargs, var_options=variables)
-        
+  def run(self,terms,variables=None,**kwargs):
+
+        # get options
+        self.set_options(direct=kwargs)
 
         # set variables
         path = self.get_option('path')
         select = self.get_option('select')
-        
-        # Find file in search path
-        lookup = self.find_file_in_search_path(variables, 'files', path)
-        display.vvv(u"File lookup using %s as file" % lookup)
-        try:
-                if lookup:
-                        print('bob')
-                        
-                else:
-                        raise AnsibleParserError()
 
-        except AnsibleParserError():                 
-                raise AnsibleError("Could not locate file in path: %s" % path)
-
-                 
-        
-
+        # check for user error
+        self.sqlite_check(path, select)
 
         # setup connection
         curse = sqlite3.connect(path).cursor()
 
-        # grab data
+        # setup select statement
+        select = self.get_option('select')
         values = curse.execute(select)
 
         # setup keys from column headers
@@ -124,6 +115,4 @@ class LookupModule(LookupBase):
         for v in values:
           json_object = dict(zip(keys,v))
           rel.append(json_object)
-        return rel,kv,term
-
-
+        return rel
