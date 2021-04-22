@@ -73,7 +73,7 @@ class LookupModule(LookupBase):
                 else:
                         raise AnsibleParserError()
 
-        except AnsibleParserError()                 
+        except AnsibleParserError():                 
                 raise AnsibleError("Could not locate file in path: %s" % term)
 
                  
