@@ -50,9 +50,8 @@ display = Display()
 import os
 try:
     import sqlite3
-except ImportError:
-    pass
-
+except ImportError as e:
+    raise AnsibleError("Please install sqlite3")
         
 # function to check if file is sqlite db file and that string is select statement
 def sqlite_check(path, select):
@@ -61,10 +60,11 @@ def sqlite_check(path, select):
     file_header = test_file.read(16)
     qlist = select.split()
     select_test = qlist[0].upper()
-    print(file_check)
 
-    if select_test != 'SELECT':
-        raise AnsibleError("Sorry, SELECT statements only")
+    try:
+        if select_test != 'SELECT':
+                break
+    raise AnsibleError("Sorry, SELECT statements only")
 
     if not file_check:
         raise AnsibleError("{} is not in the current path".format(path))
