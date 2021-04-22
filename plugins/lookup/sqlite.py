@@ -124,6 +124,6 @@ class LookupModule(LookupBase):
         for v in values:
           json_object = dict(zip(keys,v))
           rel.append(json_object)
-        return rel
+        return rel,kv,term
 
 
