@@ -64,13 +64,13 @@ def sqlite_check(path, select):
     print(file_check)
 
     if select_test != 'SELECT':
-        raise Exception("Sorry, SELECT statements only")
+        raise AnsibleError("Sorry, SELECT statements only")
 
-    if file_check != True:
-        raise Exception("{} is not in the current path".format(path))
+    if not file_check:
+        raise AnsibleError("{} is not in the current path".format(path))
 
     if file_header != b'SQLite format 3\x00':
-        raise Exception("{} is not a sqlite db file".format(path))
+        raise AnsibleError("{} is not a sqlite db file".format(path))
 
 class LookupModule(LookupBase):
     def run(self,terms,**kwargs):
