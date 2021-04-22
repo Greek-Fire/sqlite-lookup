@@ -67,7 +67,10 @@ def sqlite_check(path, select):
     except FileNotFoundError as e:
         raise AnsibleError("Sorry, SELECT statements only")
 
-    if not file_check:
+    try:
+        if not file_check:
+                break
+    except FileNotFoundError as e:
         raise AnsibleError("{} is not in the current path".format(path))
 
     if file_header != b'SQLite format 3\x00':
