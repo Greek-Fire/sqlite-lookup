@@ -64,7 +64,8 @@ def sqlite_check(path, select):
     try:
         if select_test != 'SELECT':
                 break
-    raise AnsibleError("Sorry, SELECT statements only")
+    except FileNotFoundError as e:
+        raise AnsibleError("Sorry, SELECT statements only")
 
     if not file_check:
         raise AnsibleError("{} is not in the current path".format(path))
