@@ -66,25 +66,41 @@ def sqlite_check(path, select):
                 #file_header = test_file.read(16)
         
               #raise AnsibleError("Sorry, SELECT statements only")
+                file_header != b'SQLite format 3\x00':
 
            
         else:
                 raise AnsibleParserError()
 
-    except AnsibleParserError()                 file_header != b'SQLite format 3\x00':
+    except AnsibleParserError()                 
         raise AnsibleError("Could not locate file in path: %s" % term)
 
 class LookupModule(LookupBase):
-    def run(self,terms,**kwargs):
+    def run(self,terms, **kwargs, variables=None):
         # get options
-        self.set_options(direct=kwargs)
+        self.set_options(direct=kwargs, var_options=variables)
+        
 
         # set variables
         path = self.get_option('path')
         select = self.get_option('select')
+        
+        # Find file in search path
+        lookup = self.find_file_in_search_path(variables, 'files', path)
+        display.vvv(u"File lookup using %s as file" % lookup)
+        try:
+                if lookup:
+                        print('bob')
+                        
+                else:
+                        raise AnsibleParserError()
 
-        # check for user error
-        sqlite_check(path, select)
+    except AnsibleParserError()                 
+        raise AnsibleError("Could not locate file in path: %s" % term)
+
+                 
+        
+
 
         # setup connection
         curse = sqlite3.connect(path).cursor()
