@@ -73,19 +73,19 @@ class LookupModule(LookupBase):
       file_check = False #os.path.isfile(path)
       display.vvvv(u"File lookup using %s as file" % file_check)
       try:
-        if file_check:
+        if select_test != 'SELECT':
           file_header = open(path,"rb").read(16)
+        
+        if file_check:
+          raise AnsibleError("could not locate file in lookup: %s" % path)
+
+        if file_header != b'SQLite format 3\x00':
+          raise AnsibleParserErro("{} is not a sqlite db file".format(path))
         else:
           raise AnsibleParserError()
 
       except AnsibleParserError:
-        raise AnsibleError("could not locate file in lookup: %s" % path)
-
-      if select_test != 'SELECT':
-          raise AnsibleParserError("Sorry, SELECT statements only")
-
-      if file_header != b'SQLite format 3\x00':
-          raise AnsibleParserErro("{} is not a sqlite db file".format(path))
+        raise AnsibleParserError("Sorry, SELECT statements only")
 
 
   def run(self,terms,variables=None,**kwargs):
