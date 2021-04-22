@@ -66,30 +66,23 @@ try:
 except ImportError:
     pass
 
-class LookupModule(LookupBase):
-  def sqlite_check(self, path, select):
-      qlist = select.split()
-      select_test = qlist[0].upper()
-      file_check = False #os.path.isfile(path)
-      display.vvvv(u"File lookup using %s as file" % file_check)
-      try:
+    def sqlite_check(self, path, select):
+        file_check = os.path.isfile(path)
+        qlist = select.split()
+        select_test = qlist[0].upper()
+
         if select_test != 'SELECT':
-          file_header = open(path,"rb").read(16)
+            raise Exception("Sorry, SELECT statements only")
         
-        if file_check:
-          raise AnsibleError("could not locate file in lookup: %s" % path)
+        if file_check != True:
+            raise Exception("{} is not in the current path".format(path))
+        
+        file_header = open(path,'rb').read(16)
 
         if file_header != b'SQLite format 3\x00':
-          raise AnsibleParserErro("{} is not a sqlite db file".format(path))
-        else:
-          raise AnsibleParserError()
+            raise Exception("{} is not a sqlite db file".format(path))
 
-      except AnsibleParserError:
-        raise AnsibleParserError("Sorry, SELECT statements only")
-
-
-  def run(self,terms,variables=None,**kwargs):
-
+    def run(self,terms,**kwargs):
         # get options
         self.set_options(direct=kwargs)
 
@@ -99,6 +92,9 @@ class LookupModule(LookupBase):
 
         # check for user error
         self.sqlite_check(path, select)
+
+        # setup connection
+        curse = sqlite3.connect(path).cursor()
 
         # setup connection
         curse = sqlite3.connect(path).cursor()
