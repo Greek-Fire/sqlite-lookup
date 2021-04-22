@@ -71,7 +71,7 @@ def sqlite_check(path, select):
         if not file_check:
                 break
     except FileNotFoundError as e:
-        raise AnsibleError("{} is not in the current path".format(path))
+        raise AnsibleError("{} is not in the current path" % (term, to_native(e)))
 
     if file_header != b'SQLite format 3\x00':
         raise AnsibleError("{} is not a sqlite db file".format(path))
