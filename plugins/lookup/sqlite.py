@@ -55,7 +55,37 @@ except AnsibleParserError():
         
 class LookupModule(LookupBase):
     def run(self,terms, **kwargs, variables=None):
-        # get options
+        ret = []
+
+        self.set_options(var_options=variables, direct=kwargs)
+
+        # populate options
+        paramvals = self.get_options()
+
+        for term in terms:
+            print(term)
+            kv = parse_kv(term)
+            print(kv)
+
+            if '_raw_params' not in kv:
+                raise AnsibleError('Search key is required but was not found')
+
+            key = kv['_raw_params']
+
+            # parameters override per term using k/v
+            try:
+                for name, value in kv.items():
+                    if name == '_raw_params':
+                        continue
+                    if name not in paramvals:
+                        raise AnsibleAssertionError('%s is not a valid option' % name)
+
+                    self._deprecate_inline_kv()
+                    paramvals[name] = value
+
+            except (ValueError, AssertionError) as e:
+                raise AnsibleError(e)
+                
         self.set_options(direct=kwargs, var_options=variables)
         
 
@@ -74,7 +104,7 @@ class LookupModule(LookupBase):
                         raise AnsibleParserError()
 
         except AnsibleParserError():                 
-                raise AnsibleError("Could not locate file in path: %s" % term)
+                raise AnsibleError("Could not locate file in path: %s" % path)
 
                  
         
