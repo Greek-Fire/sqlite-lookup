@@ -58,7 +58,7 @@ def sqlite_check(path, select):
     qlist = select.split()
     select_test = qlist[0].upper()
     try:
-        if not os.path.exists(path):
+        if os.path.exists(path):
                 
                 #select_test != 'SELECT':
                 #if not os.path.exists(path):
