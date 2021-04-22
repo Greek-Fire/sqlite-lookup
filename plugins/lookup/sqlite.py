@@ -54,26 +54,6 @@ except ImportError as e:
     raise AnsibleError("Please install sqlite3")
         
 # function to check if file is sqlite db file and that string is select statement
-def sqlite_check(path, select):
-    qlist = select.split()
-    select_test = qlist[0].upper()
-    try:
-        if os.path.exists(path):
-                
-                #select_test != 'SELECT':
-                #if not os.path.exists(path):
-                #test_file = open(path, "rb")
-                #file_header = test_file.read(16)
-        
-              #raise AnsibleError("Sorry, SELECT statements only")
-                file_header != b'SQLite format 3\x00':
-
-           
-        else:
-                raise AnsibleParserError()
-
-    except AnsibleParserError()                 
-        raise AnsibleError("Could not locate file in path: %s" % term)
 
 class LookupModule(LookupBase):
     def run(self,terms, **kwargs, variables=None):
