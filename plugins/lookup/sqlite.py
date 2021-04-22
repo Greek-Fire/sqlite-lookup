@@ -41,7 +41,7 @@ RETURN = '''
         type: list
         elements: string
 '''
-from ansible.errors import AnsibleError, AnsibleParserError, AnsibleFileNotFound
+from ansible.errors import AnsibleError, AnsibleParserError
 from ansible.plugins.lookup import LookupBase
 from ansible.utils.display import Display
 
@@ -57,18 +57,22 @@ except ImportError as e:
 def sqlite_check(path, select):
     qlist = select.split()
     select_test = qlist[0].upper()
+    try:
+        if if not os.path.exists(path):
+                
+                #select_test != 'SELECT':
+                #if not os.path.exists(path):
+                #test_file = open(path, "rb")
+                #file_header = test_file.read(16)
+        
+              #raise AnsibleError("Sorry, SELECT statements only")
 
-    
-    if select_test != 'SELECT':
-        raise AnsibleError("Sorry, SELECT statements only")
+           
+        else:
+                raise AnsibleParserError()
 
-    if not os.path.exists(path):
-        raise AnsibleFileNotFound("{} is not in the current path").format(path))
-    test_file = open(path, "rb")
-    file_header = test_file.read(16)
-
-    if file_header != b'SQLite format 3\x00':
-        raise AnsibleError("{} is not a sqlite db file".format(path))
+    except AnsibleParserError()                 file_header != b'SQLite format 3\x00':
+        raise AnsibleError("Could not locate file in path: %s" % term)
 
 class LookupModule(LookupBase):
     def run(self,terms,**kwargs):
