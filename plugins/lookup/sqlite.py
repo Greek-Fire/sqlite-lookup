@@ -63,7 +63,7 @@ def sqlite_check(path, select):
         raise AnsibleError("Sorry, SELECT statements only")
 
     if not os.path.exists(path):
-        raise AnsibleError("{} is not in the current path").format(path))
+        raise AnsibleFileNotFound("{} is not in the current path").format(path))
     test_file = open(path, "rb")
     file_header = test_file.read(16)
 
