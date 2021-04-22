@@ -55,7 +55,6 @@ except ImportError as e:
         
 # function to check if file is sqlite db file and that string is select statement
 def sqlite_check(path, select):
-    file_check = os.path.isfile(path)
     qlist = select.split()
     select_test = qlist[0].upper()
 
@@ -63,7 +62,7 @@ def sqlite_check(path, select):
     if select_test != 'SELECT':
         raise AnsibleError("Sorry, SELECT statements only")
 
-    if not file_check:
+    if not os.path.exists(path):
         raise AnsibleError("{} is not in the current path").format(path))
     test_file = open(path, "rb")
     file_header = test_file.read(16)
