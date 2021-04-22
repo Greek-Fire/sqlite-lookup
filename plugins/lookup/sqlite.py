@@ -41,7 +41,7 @@ RETURN = '''
         type: list
         elements: string
 '''
-from ansible.errors import AnsibleError, AnsibleParserError
+from ansible.errors import AnsibleError, AnsibleParserError, AnsibleFileNotFound
 from ansible.plugins.lookup import LookupBase
 from ansible.utils.display import Display
 
