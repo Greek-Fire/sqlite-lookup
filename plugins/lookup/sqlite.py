@@ -88,27 +88,23 @@ except ImportError:
 
         # set variables
         path = self.get_option('path')
+        
+        # setup select statement
         select = self.get_option('select')
-
+        
         # check for user error
         self.sqlite_check(path, select)
 
-        # setup connection
-        curse = sqlite3.connect(path).cursor()
-
-        # setup connection
-        curse = sqlite3.connect(path).cursor()
-
-        # setup select statement
-        select = self.get_option('select')
-        values = curse.execute(select)
-
-        # setup keys from column headers
-        keys = [description[0] for description in values.description]
-
         # create a list of json objects from the results of the select statement
+        curse = sqlite3.connect(path).cursor()
+        values = curse.execute(select)
+        data = values.fetchone()
         rel = []
-        for v in values:
-          json_object = dict(zip(keys,v))
-          rel.append(json_object)
-        return rel
+        if data > 0;
+            keys = [description[0] for description in values.description]
+            for v in values:
+                json_object = dict(zip(keys,v))
+                rel.append(json_object)
+            return rel
+        else:
+            return rel
