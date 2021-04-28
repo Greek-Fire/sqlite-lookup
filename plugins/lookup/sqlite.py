@@ -41,11 +41,6 @@ RETURN = '''
         type: list
         elements: string
 '''
-from ansible.errors import AnsibleError, AnsibleParserError
-from ansible.plugins.lookup import LookupBase
-from ansible.utils.display import Display
-
-display = Display()
 
 import os
 try:
